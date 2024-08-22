@@ -831,6 +831,62 @@ plt.show()
     
 
 
+I add two these below block codes from solution also. 
+
+
+```python
+from sklearn.decomposition import PCA
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+# Apply PCA
+pca = PCA(n_components=2)  # Reduce to 2 components for visualization
+principal_components = pca.fit_transform(X_scaled)
+
+# Create a DataFrame with the principal components
+pca_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
+pca_df['class'] = y.values
+# Plot the principal components
+plt.figure(figsize=(8, 6))
+plt.scatter(pca_df[pca_df['class'] == 0]['PC1'], pca_df[pca_df['class'] == 0]['PC2'], label='Class 0')
+plt.scatter(pca_df[pca_df['class'] == 1]['PC1'], pca_df[pca_df['class'] == 1]['PC2'], label='Class 1')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA of Dataset')
+plt.legend()
+plt.show()
+
+```
+
+
+    
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_21_0.png)
+    
+
+
+
+```python
+# Outlier detection
+
+# Z-score calculation
+from scipy.stats import zscore
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+z_scores = np.abs(zscore(X_scaled))
+outliers = np.where(z_scores > 10)  # Threshold is X standard deviations
+
+print(outliers[0].shape, outliers[1].shape)
+print("Outliers detected using Z-score:", outliers)
+```
+
+    (4530,) (4530,)
+    Outliers detected using Z-score: (array([   164,    164,   1158, ..., 284249, 284393, 284448]), array([20, 29, 10, ..., 29, 28, 28]))
+
+
 ## Student Question
 
 1. Describe at least two major challenges in the dataset based on your EDA findings.
@@ -856,6 +912,17 @@ plt.show()
   -  No! Because of the low correlation between features and the target and the high degree of class imbalance.
 
   </font>
+
+## Solution Answers
+
+1. Describe at least two major challenges in the dataset based on your EDA findings.
+> 1. Dataset is imbalance
+> 2. Features are not in the same scale   
+2. Analyze the correlation matrix of the features.
+> The correlation matrix illustrates the correlation of each feature with the label and with each other. In this case, the label has the highest correlation with feature v11 and the lowest correlation with feature v17. Additionally, normalizing the feature scale could potentially result in a different correlation matrix.
+
+3. Is your data linearly separable? Please provide a rationale.
+> No, there are reasons for this: Logistic regression is a linear model and in the following sections, it doesn't completely fit the data. Additionally, you can use PCA to reduce the dimensionality and visualize the data.
 
 ## Data Preprocessing
 
@@ -1010,16 +1077,6 @@ pipeline.fit(X_train, y_train)
 ##########################################################
 ##########################################################
 ```
-
-    /home/andre/code/AI/venv/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:469: ConvergenceWarning: lbfgs failed to converge (status=1):
-    STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-    
-    Increase the number of iterations (max_iter) or scale the data as shown in:
-        https://scikit-learn.org/stable/modules/preprocessing.html
-    Please also refer to the documentation for alternative solver options:
-        https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-      n_iter_i = _check_optimize_result(
-
 
 
 
@@ -1942,7 +1999,7 @@ skplt.metrics.plot_confusion_matrix(y_test, y_test_pred)
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_31_2.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_35_2.png)
     
 
 
@@ -1953,7 +2010,6 @@ skplt.metrics.plot_confusion_matrix(y_test, y_test_pred)
 ###################################################################################
 
 # I have no more idea :D
-# All is ok I think
 
 ###################################################################################
 ###################################################################################
@@ -2013,14 +2069,6 @@ skplt.metrics.plot_confusion_matrix(y_test, y_pred)
     SVM Confusion Matrix:
 
 
-    /home/andre/code/AI/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:1531: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-      _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-    /home/andre/code/AI/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:1531: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-      _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-    /home/andre/code/AI/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:1531: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
-      _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
-
-
 
 
 
@@ -2030,32 +2078,54 @@ skplt.metrics.plot_confusion_matrix(y_test, y_pred)
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_35_3.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_39_2.png)
     
 
 
-<font size="7" color="red">
-The result is not correct. I have no idea how to prevent the overfitting. I did everything that I know, but the result toggles between overfitting (all data points are 0) and underfitting (all data points are 1).  
-</font>
-<br>
-<br>
-<font size="7" color="yellow">
-I tested different kernels (including RBF, sigmoid, poly, and linear). Then, I tested different C hyperparameter and tried to 'balanced' the weights of the dataset, but none of them were good ideas.
-</font>
-<br>
-<br>
-<font size="7" color="green">
-I would be very thankful if you could advise me on how to solve this.
-</font>
+I add the below code blocks to end of SVM section from the solution 
+
+
+```python
+def standardize_features(X_train, X_test):
+    # Standardize the features
+    scaler = RobustScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+    return X_train, X_test
+
+def dataset_balancement(X_train, y_train):
+    X_train = np.array(X_train)
+    y_train = np.array(y_train)
+
+    fraud_indices = np.where(y_train == 1)[0]
+    not_fraud_indices = np.where(y_train == 0)[0]
+    fraud_records =  len(fraud_indices)
+
+    under_sample_indices = np.random.choice(not_fraud_indices, len(not_fraud_indices), False)
+    upper_sample_indices = np.random.choice(fraud_indices, len(y_train), replace=True)
+
+    y_train = y_train[np.concatenate([upper_sample_indices, under_sample_indices])]
+    X_train = X_train[np.concatenate([upper_sample_indices, under_sample_indices])]
+    print(X_train.shape, y_train.shape)
+    return X_train, y_train
+```
 
 
 ```python
 ######################################################
 ###################### TO DO #########################
 ######################################################
+X_train_, X_test_ = standardize_features(X_train, X_test)
 
-# The image below shows the expected result I want to achieve but I cant :"(
-
+svm = SVC()
+svm.fit(X_train_, y_train)
+# Make predictions on the test set
+y_pred_svm = svm.predict(X_test_)
+# Evaluate the model
+print("SVM Classification Report:")
+print(classification_report(y_test, y_pred_svm))
+print("SVM Confusion Matrix:")
+skplt.metrics.plot_confusion_matrix(y_test, y_pred_svm)
 ######################################################
 ######################################################
 ######################################################
@@ -2065,10 +2135,10 @@ I would be very thankful if you could advise me on how to solve this.
                   precision    recall  f1-score   support
     
                0       1.00      1.00      1.00     85307
-               1       0.91      0.68      0.78       136
+               1       0.96      0.78      0.86       136
     
         accuracy                           1.00     85443
-       macro avg       0.96      0.84      0.89     85443
+       macro avg       0.98      0.89      0.93     85443
     weighted avg       1.00      1.00      1.00     85443
     
     SVM Confusion Matrix:
@@ -2083,7 +2153,7 @@ I would be very thankful if you could advise me on how to solve this.
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_37_2.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_42_2.png)
     
 
 
@@ -2092,20 +2162,96 @@ I would be very thankful if you could advise me on how to solve this.
 ##################################### TO DO #######################################
 ## Feel free to add more cells and employ creative ideas to enhance performance. ##
 ###################################################################################
-# I have no idea what should I do...
+X_train_, X_test_ = standardize_features(X_train, X_test)
+X_train_, y_train_ = dataset_balancement(X_train_, y_train)
+
+# Initialize and train the SVM model with a non-linear kernel
+svm = SVC()
+svm.fit(X_train_, y_train_)
+# Make predictions on the test set
+y_pred_svm = svm.predict(X_test_)
+# Evaluate the model
+print("SVM Classification Report:")
+print(classification_report(y_test, y_pred_svm))
+print("SVM Confusion Matrix:")
+skplt.metrics.plot_confusion_matrix(y_test, y_pred_svm)
 ###################################################################################
 ###################################################################################
 ###################################################################################
 
 ```
 
+    (512206, 30) (512206,)
+    SVM Classification Report:
+                  precision    recall  f1-score   support
+    
+               0       1.00      0.99      0.99     85307
+               1       0.12      0.91      0.22       136
+    
+        accuracy                           0.99     85443
+       macro avg       0.56      0.95      0.61     85443
+    weighted avg       1.00      0.99      0.99     85443
+    
+    SVM Confusion Matrix:
+
+
+
+
+
+    <Axes: title={'center': 'Confusion Matrix'}, xlabel='Predicted label', ylabel='True label'>
+
+
+
+
+    
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_43_2.png)
+    
+
+
+
+```python
+##################################### TO DO #######################################
+## Feel free to add more cells and employ creative ideas to enhance performance. ##
+###################################################################################
+X_train_, y_train_ = dataset_balancement(X_train_, y_train)
+
+# Initialize and train the SVM model with a non-linear kernel
+svm = SVC()
+svm.fit(X_train_, y_train_)
+# Make predictions on the test set
+y_pred_svm = svm.predict(X_test)
+# Evaluate the model
+print("SVM Classification Report:")
+print(classification_report(y_test, y_pred_svm))
+print("SVM Confusion Matrix:")
+skplt.metrics.plot_confusion_matrix(y_test, y_pred_svm)
+###################################################################################
+###################################################################################
+###################################################################################
+
+```
+
+    (512206, 30) (512206,)
+
+
 ## Student Questions
 
 1. Compare the SVM vs Logistic Regression model? Generally which one was better?
-2. Is accuracy a suitable metric for evaluating performance in this problem? Explain your rationale.
-3. If achieving high recall is crucial for our problem, what recommendations do you have to enhance this metric specifically for this dataset?
+> There is no definitive answer, as neither model consistently outperforms the other in every scenario. It is often best to try both methods and use cross-validation to compare their performance on your specific dataset with specific preprocessing.
 
-  **Student Answer:**  .......
+  > Overall Recommendations:
+
+  > 1. Linearly separable data: Both SVM and Logistic Regression can perform well, but SVM may offer a better margin.
+  > 2. Large datasets: Logistic Regression is typically faster and easier to implement.
+  > 3. Interpretability: Logistic Regression is preferred due to the easier interpretation of its coefficients.
+  > 4. Robustness to outliers: SVM is generally a better choice due to its focus on maximizing the margin and reliance on support vectors.
+2. Is accuracy a suitable metric for evaluating performance in this problem? Explain your rationale.
+> No, Accuracy is generally not a good metric for evaluating model performance on highly imbalanced datasets. This is because accuracy measures the proportion of correct predictions out of all predictions, and in the case of imbalanced datasets, it can be misleading. If the majority class is much larger than the minority class, a model could achieve high accuracy simply by always predicting the majority class, but it would fail to capture the performance on the minority class.
+
+
+3. If achieving high recall is crucial for our problem, what recommendations do you have to enhance this metric?
+> Balance the dataset classes.
+
 
 # Unsupervised Image Segmentation using Clustering!
 
@@ -2160,7 +2306,7 @@ plt.show()
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_45_0.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_51_0.png)
     
 
 
@@ -2219,7 +2365,7 @@ plt.show()
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_48_0.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_54_0.png)
     
 
 
@@ -2250,7 +2396,7 @@ plt.show()
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_50_0.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_56_0.png)
     
 
 
@@ -2281,6 +2427,6 @@ plt.show()
 
 
     
-![png](Homework_1_Student_Version_files/Homework_1_Student_Version_53_0.png)
+![png](Homework_1_Student_Version_files/Homework_1_Student_Version_59_0.png)
     
 

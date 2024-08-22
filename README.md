@@ -1,5 +1,6 @@
 I complete the TODO sections in the code for these assignments.
 
-> [!WARNING]
-> In `Homework_1_Student_Version.ipynb`, my model overfit to predict 0, which is not appropriate...
+My answers are in:
+- [Homework 1](Homework_1_Student_Version.md)
+- [Homework 2](Homework_2_Student_Version.md)
 
